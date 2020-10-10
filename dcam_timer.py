@@ -9,15 +9,18 @@ import pyttsx3
 from dcam_framework import Task, Note, timedelta_to_str, numerical_grad_1d
 
 refreshing_interval = 0.1
+ds_velocity = 0
+ds_extra_acceleration = 0
 notes_span_seconds = 10
 attention_probing_interval = (300, 900)
 attention_probing_timeout = 3
 task_log_filename = 'dcam_data/records/dcam_timer_log.txt'
 task_records_filename = 'dcam_data/records/dcam_timer_records.txt'
 notes_filename = 'notes/notes_multi-subject.txt'
-auto_start_time = '2020-10-10 15:10:00'
 auto_jump_to_task_0 = True
 auto_jump_to_undone_task = True
+
+auto_start_time = '2020-10-10 15:10:00'
 timer_event_name = '再接再厉2小时'
 timer_event_type = '课内学习 & 自学'
 # timer_event_type = '课内学习 & 听课'
@@ -182,9 +185,6 @@ def count(seconds: float):
     return count_notes(seconds_ago, now) + cap
 
 
-ds_velocity = 0
-
-
 def calc_ds_velocity():
     global ds_velocity
 
@@ -197,7 +197,7 @@ def calc_ds_velocity():
             if total_qoi - qoi >= 0:
                 total_qoi -= qoi
 
-    ds_velocity = (count(notes_span_seconds) - 1 + total_qoi) * ufd_delta_param
+    ds_velocity = (count(notes_span_seconds) + total_qoi + ds_extra_acceleration * refreshing_interval) * ufd_delta_param
     return ds_velocity
 
 
