@@ -15,7 +15,7 @@ attention_probing_timeout = 3
 task_log_filename = 'dcam_data/records/dcam_timer_log.txt'
 task_records_filename = 'dcam_data/records/dcam_timer_records.txt'
 notes_filename = 'notes/notes_multi-subject.txt'
-auto_start_time = '2020-10-10 14:10:00'
+auto_start_time = '2020-10-10 15:10:00'
 auto_jump_to_task_0 = True
 auto_jump_to_undone_task = True
 timer_event_name = '再接再厉90分钟'
@@ -27,7 +27,7 @@ timer_event_type = '课内学习 & 自学'
     , ('逆矩阵及其应用', '线性代数', 15)
     , ('查补：第1章 随机事件及其概率', '概率论与数理统计', 15)
     , ('第2章 轴向拉伸与压缩', '材料力学', 15)]'''
-task_names_n_full_duration_minutes = [
+task_list = [
     ('(自由时间)', '', 25)
     , ('自由学习', 'C/C++程序设计', 40)
     , ('第2章 轴向拉伸与压缩', '材料力学', 25)
@@ -35,6 +35,7 @@ task_names_n_full_duration_minutes = [
 ]
 ufd_delta_param = 0.5
 
+task_names_n_full_duration_minutes = task_list.copy()
 task_names = [task_tuple[0] for task_tuple in task_names_n_full_duration_minutes]
 fixed_total_full_duration = datetime.timedelta(seconds=datetime.timedelta(minutes=sum([task_tuple[2] for task_tuple in task_names_n_full_duration_minutes])).total_seconds())
 
@@ -47,7 +48,7 @@ tasks_all_done = False
 
 tasks = []
 for i, task_name in enumerate(task_names):
-    tasks.append(Task(task_name, datetime.timedelta(minutes=task_names_n_full_duration_minutes[i][2]), subject=task_names_n_full_duration_minutes[i][1]))
+    tasks.append(Task(task_name, datetime.timedelta(minutes=task_list[i][2]), subject=task_list[i][1]))
 
 engine = pyttsx3.init()
 rate = engine.getProperty('rate')
@@ -348,8 +349,7 @@ def end_all_tasks():
 def end_and_reset_all_tasks():
     tasks.clear()
     for i, task_name in enumerate(task_names):
-        tasks.append(Task(task_name, datetime.timedelta(minutes=task_names_n_full_duration_minutes[i][2]),
-                          subject=task_names_n_full_duration_minutes[i][1]))
+        tasks.append(Task(task_name, datetime.timedelta(minutes=task_list[i][2]), subject=task_list[i][1]))
 
 
 labels = []
