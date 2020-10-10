@@ -9,9 +9,6 @@ import pyttsx3
 from dcam_framework import Task, Note, timedelta_to_str, numerical_grad_1d
 
 refreshing_interval = 0.1
-ds_velocity = 0
-ds_extra_acceleration = 0
-notes_span_seconds = 10
 attention_probing_interval = (300, 900)
 attention_probing_timeout = 3
 task_log_filename = 'dcam_data/records/dcam_timer_log.txt'
@@ -36,7 +33,12 @@ task_list = [
     , ('第2章 轴向拉伸与压缩', '材料力学', 25)
     , ('第3章 扭转', '材料力学', 30)
 ]
-ufd_delta_param = 0.5
+notes_span_seconds = 60
+ds_velocity = 0
+ds_extra_acceleration = 0
+qoi_exp = 100
+qoi_factor = 0.02
+ufd_delta_param = 0.01
 
 task_names_n_full_duration_minutes = task_list.copy()
 task_names = [task_tuple[0] for task_tuple in task_names_n_full_duration_minutes]
@@ -187,16 +189,17 @@ def count(seconds: float):
 def calc_ds_velocity():
     global ds_velocity
 
+    now = datetime.datetime.now()
+
     total_qoi = 0
     for note in notes:
         qoi = qoi_of_note(note)
-        if datetime.datetime.now() - datetime.timedelta(seconds=notes_span_seconds) <= note.time <= datetime.datetime.now():
-            total_qoi += qoi
-        else:
-            if total_qoi - qoi >= 0:
-                total_qoi -= qoi
+        if now - datetime.timedelta(seconds=notes_span_seconds) <= note.time <= datetime.datetime.now():
+            time_offset = (note.time - (now - datetime.timedelta(seconds=notes_span_seconds))).total_seconds()
+            total_qoi += qoi * (qoi_exp ** (time_offset * qoi_factor) - 1)
 
-    ds_velocity = (count(notes_span_seconds) + total_qoi + ds_extra_acceleration * refreshing_interval) * ufd_delta_param
+    ds_velocity = (total_qoi + ds_extra_acceleration * refreshing_interval) * ufd_delta_param
+
     return ds_velocity
 
 
@@ -210,7 +213,7 @@ text1 = Text(tk)
 
 class PrintingThread(Thread):
     def run(self):
-        global printing, label_text, datetime_p, current_task_index, tasks_all_done
+        global printing, label_text, datetime_p, current_task_index, tasks_all_done, start_time
 
         def refresh_labels():
             if tasks[current_task_index].subject:
@@ -218,7 +221,7 @@ class PrintingThread(Thread):
             else:
                 subj = ''
             label_text.set('总进行时间：[' + str(total_duration()).split('.')[0] + ' / ' + timedelta_to_str(
-                total_full_duration()) + '] | ' + '当前任务：' + subj + tasks[current_task_index].name)
+                total_full_duration()) + '] | ' + '当前任务：' + subj + tasks[current_task_index].name + ' | 满时变化速度：' + "{:.3f}".format(ds_velocity))
 
             for i, task in enumerate(tasks):
                 if tasks[i].subject:
@@ -483,12 +486,12 @@ for i, task in enumerate(tasks):
     labels.append(label)
 
 
-# inp = input('按回车开始：')
+text1.bind('<Return>', submit_note)
 
 
 def start():
     start_printing()
-    attention_probing_thread.start()
+    # attention_probing_thread.start()
 
     tk.mainloop()
 
