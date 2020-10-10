@@ -15,18 +15,24 @@ attention_probing_timeout = 3
 task_log_filename = 'dcam_data/records/dcam_timer_log.txt'
 task_records_filename = 'dcam_data/records/dcam_timer_records.txt'
 notes_filename = 'notes/notes_multi-subject.txt'
-auto_start_time = '2020-10-10 13:00:00'
+auto_start_time = '2020-10-10 14:10:00'
 auto_jump_to_task_0 = True
 auto_jump_to_undone_task = True
 timer_event_name = '再接再厉90分钟'
 timer_event_type = '课内学习 & 自学'
 # timer_event_type = '课内学习 & 听课'
 # task_names_n_full_duration_minutes = [('(自由时间)', '', 30), ('自学', '英语', 45), ('听讲', '英语', 15)]
-task_names_n_full_duration_minutes = [('(自由时间)', '', 30)
+'''task_names_n_full_duration_minutes = [('(自由时间)', '', 30)
     , ('自由学习', 'C/C++程序设计', 15)
     , ('逆矩阵及其应用', '线性代数', 15)
     , ('查补：第1章 随机事件及其概率', '概率论与数理统计', 15)
-    , ('第2章 轴向拉伸与压缩', '材料力学', 15)]
+    , ('第2章 轴向拉伸与压缩', '材料力学', 15)]'''
+task_names_n_full_duration_minutes = [
+    ('(自由时间)', '', 25)
+    , ('自由学习', 'C/C++程序设计', 40)
+    , ('第2章 轴向拉伸与压缩', '材料力学', 25)
+    , ('第3章 扭转', '材料力学', 30)
+]
 ufd_delta_param = 0.5
 
 task_names = [task_tuple[0] for task_tuple in task_names_n_full_duration_minutes]
