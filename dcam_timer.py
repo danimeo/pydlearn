@@ -20,16 +20,16 @@ notes_filename = 'notes/notes_multi-subject.txt'
 auto_jump_to_task_0 = True
 auto_jump_to_undone_task = True
 
-auto_start_time = '2020-10-10 15:10:00'
-timer_event_name = '再接再厉2小时'
-timer_event_type = '课内学习 & 自学'
-# timer_event_type = '课内学习 & 听课'
-# task_names_n_full_duration_minutes = [('(自由时间)', '', 30), ('自学', '英语', 45), ('听讲', '英语', 15)]
-'''task_names_n_full_duration_minutes = [('(自由时间)', '', 30)
+'''timer_event_type = '课内学习 & 听课'
+task_names_n_full_duration_minutes = [('(自由时间)', '', 30), ('自学', '英语', 45), ('听讲', '英语', 15)]
+task_names_n_full_duration_minutes = [('(自由时间)', '', 30)
     , ('自由学习', 'C/C++程序设计', 15)
     , ('逆矩阵及其应用', '线性代数', 15)
     , ('查补：第1章 随机事件及其概率', '概率论与数理统计', 15)
     , ('第2章 轴向拉伸与压缩', '材料力学', 15)]'''
+
+auto_start_time = '2020-10-10 15:10:00'
+timer_event_name, timer_event_type = '再接再厉2小时', '课内学习 & 自学'
 task_list = [
     ('(自由时间)', '', 25)
     , ('自由学习', 'C/C++程序设计', 40)
@@ -54,8 +54,7 @@ for i, task_name in enumerate(task_names):
     tasks.append(Task(task_name, datetime.timedelta(minutes=task_list[i][2]), subject=task_list[i][1]))
 
 engine = pyttsx3.init()
-rate = engine.getProperty('rate')
-engine.setProperty('rate', rate - 10)
+engine.setProperty('rate', engine.getProperty('rate') - 10)
 
 
 def total_duration():
