@@ -52,7 +52,7 @@ def update():
 
         for record in records_list:
             r_list = record.split('\t')
-            if r_list[6] == 'undone':
+            if r_list[6] != 'done':
                 continue
             event = Event(r_list[2],
                           datetime.datetime.strptime(r_list[4], '%H:%M:%S') - datetime.datetime.strptime('0:00:00',

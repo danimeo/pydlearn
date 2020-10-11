@@ -6,11 +6,13 @@ import random
 import jieba.posseg as pseg
 import pyttsx3
 
-from dcam_framework import Task, Note, timedelta_to_str, numerical_grad_1d
+from dcam_framework import Task, Note, timedelta_to_str
+from dcam_tests import basic_attention_test
 
-version = '2020.10.11'
+version = '2020.10.12'
 refreshing_interval = 0.1
 record_writing_interval = 10
+attention_testing_interval = (3, 3)
 attention_probing_interval = (300, 900)
 attention_probing_timeout = 3
 task_log_filename = 'dcam_data/records/dcam_timer_log.txt'
@@ -510,7 +512,7 @@ btn3 = Button(frame1, text='停止并重置当前任务计时', command=end_curr
 btn4 = Button(frame1, text='停止并重置所有任务计时', command=end_all_tasks)
 btn5 = Button(frame1, text='停止并重置所有任务计时和预定时间', command=end_and_reset_all_tasks)
 lf1 = LabelFrame(tk, text='任务列表')
-frame2 = Frame(tk)
+lf2 = LabelFrame(tk, text='测试')
 
 lbl1.pack(pady=3)
 # frame1.pack(side='top', fill='both', expand=False, padx=40)
@@ -520,7 +522,6 @@ for packing_index, to_be_packed in enumerate(packing_list):
     to_be_packed.grid(row=0, column=packing_index)
 # lf1.pack(side='top', fill='both', expand=False, padx=40)
 lf1.pack(fill='both', padx=10, pady=5)
-frame2.pack(fill='both', padx=10, pady=5)
 # text1.pack(side=BOTTOM, padx=10)
 #text1.place(x=125, y=450, anchor='nw')
 text1.pack(fill='both', padx=10, pady=5)
@@ -539,10 +540,78 @@ for i, task in enumerate(tasks):
 text1.bind('<Return>', submit_note)
 
 
+def attention_test():
+    global current_task_index, tasks, ds_velocity
+
+    test_results = []
+
+    while True:
+        while not is_any_task_running():
+            time.sleep(0.1)
+
+        previous_task_index = current_task_index
+
+        for task in tasks:
+            task.pause()
+        tasks[0].start()
+        current_task_index = 0
+
+        lf2.pack_forget()
+        text1.pack_forget()
+        lf2.pack(fill='both', padx=10, pady=5)
+        text1.pack(fill='both', padx=10, pady=5)
+
+        test_result = []
+
+        thr = Thread(target=basic_attention_test, args=(lf2, test_result))
+        thr.start()
+        thr.join()
+
+        test_results.append(test_result)
+
+        ratio = test_result[0][1] / test_result[0][2]
+        if len(test_results) == 1:
+            current_task_index = 0
+
+            if ratio < 0.9:
+                a = (1 - ratio / 0.9) * (total_full_duration() - total_duration()).total_seconds()
+            else:
+                a = (1 - ratio / 0.9) * tasks[current_task_index].full_duration.total_seconds()
+            update_full_durations(a)
+
+            current_task_index = previous_task_index
+        else:
+            current_task_index = previous_task_index
+
+            if ratio < 0.9:
+                a = 1 - ratio / 0.9
+            else:
+                a = 0
+            update_full_durations(- a * tasks[current_task_index].full_duration.total_seconds())
+
+        for task in tasks:
+            task.pause()
+        tasks[previous_task_index].start()
+
+        time.sleep(random.uniform(attention_testing_interval[0], attention_testing_interval[1]))
+
+
+attention_testing_thread = Thread(target=attention_test, args=())
+
+
+'''def temp1():
+    while True:
+        print(attention_test_result)
+        time.sleep(1)
+
+
+Thread(target=temp1, args=()).start()'''
+
+
 def start():
     start_printing()
     record_writing_thread.start()
-    # attention_probing_thread.start()
+    attention_testing_thread.start()
 
     tk.mainloop()
 
