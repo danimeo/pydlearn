@@ -8,7 +8,9 @@ import pyttsx3
 
 from dcam_framework import Task, Note, timedelta_to_str, numerical_grad_1d
 
+version = '2020.10.11'
 refreshing_interval = 0.1
+record_writing_interval = 10
 attention_probing_interval = (300, 900)
 attention_probing_timeout = 3
 task_log_filename = 'dcam_data/records/dcam_timer_log.txt'
@@ -48,7 +50,7 @@ initial_time = datetime.datetime.now()
 printing = False
 datetime_p = datetime.datetime.strptime(auto_start_time, '%Y-%m-%d %H:%M:%S')
 
-start_time = initial_time
+end_time = start_time = initial_time
 tasks_all_done = False
 
 tasks = []
@@ -126,6 +128,7 @@ def update_full_durations(delta_seconds: float):
 
 
 stopKey = [w.strip() for w in codecs.open('data/stopWord.txt', 'r', encoding='utf-8').readlines()]
+temp = pseg.lcut('测试文本')
 
 
 def data_preprocess(text, stopkey):
@@ -205,15 +208,53 @@ def calc_ds_velocity():
 
 tk = Tk()
 tk.minsize(720, 580)
-tk.title('DCAM-Cephret多任务切换计时器（v2020.10.10）')
+tk.title('DCAM-Cephret多任务切换计时器（v' + version + '）')
 label_text = StringVar(tk, '', '')
 lbl1 = Label(tk, textvariable=label_text)
 text1 = Text(tk)
 
 
+def write_to_records_file():
+    global start_time, end_time
+    with open(task_records_filename, 'r+', encoding='utf-8') as file_io:
+        '''content = file_io.read().strip()
+        print(len(content), content)
+        # print(content.splitlines()[-1].split('\t')[0])
+        print()
+        l = content.splitlines()[-1].split('\t')
+        print(content, content.rindex('\n'), sep='\n\n')
+        if datetime.datetime.strptime(l[0], '%Y-%m-%d %H:%M:%S.%f') == start_time:
+            last_line_begin = content.rindex('\n')
+            if last_line_begin >= 0:
+                file_io.seek(last_line_begin)
+                file_io.truncate()'''
+
+        lines = file_io.readlines()
+        if datetime.datetime.strptime(lines[-1].split('\t')[0], '%Y-%m-%d %H:%M:%S.%f') == start_time:
+            file_io.seek(0)
+            file_io.truncate()
+            file_io.writelines(lines[:-1])
+
+        t_str = str(start_time) + '\t' + str(
+            end_time) + '\t' + timer_event_name + '\t' + timer_event_type + '\t' + str(
+            fixed_total_full_duration) + '\t'
+        for i, tsk in enumerate(tasks):
+            ts_str = ''
+            for ts in tsk.timestamps:
+                ts_str += str(ts) + '~'
+            t_str += str(i) + ',' + tsk.name + ',' + tsk.subject + ',' + str(
+                tsk.full_duration) + ',' + ts_str[:-1] + '; '
+        if tasks_all_done:
+            is_done = 'done'
+        else:
+            is_done = 'undone'
+        file_io.seek(0, 2)
+        file_io.write(t_str[:-2] + '\t' + is_done + '\n')
+
+
 class PrintingThread(Thread):
     def run(self):
-        global printing, label_text, datetime_p, current_task_index, tasks_all_done, start_time
+        global printing, label_text, datetime_p, current_task_index, tasks_all_done, start_time, end_time
 
         def refresh_labels():
             if tasks[current_task_index].subject:
@@ -274,7 +315,11 @@ class PrintingThread(Thread):
                     break
 
             if not tasks_all_done and total_duration() >= total_full_duration():
-                now = datetime.datetime.now()
+                tasks_all_done = True
+                end_time = datetime.datetime.now()
+
+                write_to_records_file()
+
                 with open(task_log_filename, 'at', encoding='utf-8') as file_output:
                     file_output.write('================================\n')
                     file_output.write(timer_event_name + ' | [' + timer_event_type + ']\n')
@@ -285,26 +330,14 @@ class PrintingThread(Thread):
                             subject = task.subject + ': '
                         else:
                             subject = ''
-                        file_output.write(str(n) + '. ' + subject + task.name + ' [' + str(task.get_duration()).split('.')[
-                            0] + ' / ' + str(task.full_duration).split('.')[0] + ']\n')
+                        file_output.write(
+                            str(n) + '. ' + subject + task.name + ' [' + str(task.get_duration()).split('.')[
+                                0] + ' / ' + str(task.full_duration).split('.')[0] + ']\n')
                     file_output.write('--------------------------------\n')
                     file_output.write('[开始时间：' + str(start_time) + ']\n')
-                    file_output.write('[完成时间：' + str(now) + ']\n')
+                    file_output.write('[完成时间：' + str(end_time) + ']\n')
                     file_output.write('[总计耗时：[' + str(total_duration()) + ' / ' + str(total_full_duration()) + ']\n')
                     file_output.write('================================\n\n')
-                with open(task_records_filename, 'at', encoding='utf-8') as file_output:
-                    t_str = str(start_time) + '\t' + str(
-                        now) + '\t' + timer_event_name + '\t' + timer_event_type + '\t' + str(
-                        fixed_total_full_duration) + '\t'
-                    for i, tsk in enumerate(tasks):
-                        ts_str = ''
-                        for ts in tsk.timestamps:
-                            ts_str += str(ts) + '~'
-                        t_str += str(i) + ',' + tsk.name + ',' + tsk.subject + ',' + str(
-                            tsk.full_duration) + ',' + ts_str[:-1] + '; '
-                    file_output.write(t_str[:-2] + '\n')
-
-                tasks_all_done = True
 
             while not printing:
                 time.sleep(0.1)
@@ -375,7 +408,6 @@ class Command:
                 current_task_index = n
             else:
                 tasks[n].pause()
-
 
 
 def submit_note(event):
@@ -455,6 +487,20 @@ def update_full_durations_by_attention():
 attention_probing_thread = Thread(target=update_full_durations_by_attention, args=())
 
 
+def record_writing():
+    global end_time
+    while True:
+        time.sleep(record_writing_interval)
+        if not is_any_task_running():
+            continue
+        if not tasks_all_done:
+            end_time = datetime.datetime.now()
+        write_to_records_file()
+
+
+record_writing_thread = Thread(target=record_writing, args=())
+
+
 frame1 = Frame(tk)
 btn1 = Button(frame1, text='开始/继续当前任务', command=start_current_task)
 btn2 = Button(frame1, text='暂停当前任务', command=pause_current_task)
@@ -491,6 +537,7 @@ text1.bind('<Return>', submit_note)
 
 def start():
     start_printing()
+    record_writing_thread.start()
     # attention_probing_thread.start()
 
     tk.mainloop()

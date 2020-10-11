@@ -52,6 +52,8 @@ def update():
 
         for record in records_list:
             r_list = record.split('\t')
+            if r_list[6] == 'undone':
+                continue
             event = Event(r_list[2],
                           datetime.datetime.strptime(r_list[4], '%H:%M:%S') - datetime.datetime.strptime('0:00:00',
                                                                                                          '%H:%M:%S'),
@@ -73,7 +75,9 @@ def update():
                             subject=item_list[2])
                 '''if [ts for ts in item_list[4].split('~')] == ['']:
                     print(t)'''
-                task.timestamps = [Timestamp(datetime.datetime.strptime(ts.split('|')[0], '%Y-%m-%d %H:%M:%S.%f'), ts.split('|')[1]) for ts in item_list[4].split('~')]
+                ts_list = item_list[4].split('~')
+                if len(ts_list) > 1 or (len(ts_list) == 1 and ts_list[0]):
+                    task.timestamps = [Timestamp(datetime.datetime.strptime(ts_list[0], '%Y-%m-%d %H:%M:%S.%f'), ts_list[1]) for ts_list in (ts.split('|') for ts in ts_list)]
                 event.tasks[int(item_list[0])] = task
             events.append(event)
 
