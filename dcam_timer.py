@@ -272,6 +272,8 @@ class PrintingThread(Thread):
                 label_texts[i].set(
                     str(i) + '. ' + subj + tasks[i].name + ' [' + str(tasks[i].get_duration()).split('.')[
                         0] + ' / ' + str(tasks[i].full_duration).split('.')[0] + ']')
+                if tasks[i].get_duration() >= tasks[i].full_duration:
+                    labels[i].config(fg='gray')
 
         while True:
             while printing:
@@ -508,6 +510,7 @@ btn3 = Button(frame1, text='停止并重置当前任务计时', command=end_curr
 btn4 = Button(frame1, text='停止并重置所有任务计时', command=end_all_tasks)
 btn5 = Button(frame1, text='停止并重置所有任务计时和预定时间', command=end_and_reset_all_tasks)
 lf1 = LabelFrame(tk, text='任务列表')
+frame2 = Frame(tk)
 
 lbl1.pack(pady=3)
 # frame1.pack(side='top', fill='both', expand=False, padx=40)
@@ -517,6 +520,7 @@ for packing_index, to_be_packed in enumerate(packing_list):
     to_be_packed.grid(row=0, column=packing_index)
 # lf1.pack(side='top', fill='both', expand=False, padx=40)
 lf1.pack(fill='both', padx=10, pady=5)
+frame2.pack(fill='both', padx=10, pady=5)
 # text1.pack(side=BOTTOM, padx=10)
 #text1.place(x=125, y=450, anchor='nw')
 text1.pack(fill='both', padx=10, pady=5)
