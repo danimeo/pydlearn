@@ -12,7 +12,7 @@ from dcam_tests import basic_attention_test
 version = '2020.10.12'
 refreshing_interval = 0.1
 record_writing_interval = 10
-attention_testing_interval = (3, 3)
+attention_testing_interval = (300, 900)
 attention_probing_interval = (300, 900)
 attention_probing_timeout = 3
 task_log_filename = 'dcam_data/records/dcam_timer_log.txt'
@@ -573,18 +573,18 @@ def attention_test():
         if len(test_results) == 1:
             current_task_index = 0
 
-            if ratio < 0.9:
-                a = (1 - ratio / 0.9) * (total_full_duration() - total_duration()).total_seconds()
+            if ratio < 0.905:
+                a = (1 - ratio / 0.905) * (total_full_duration() - total_duration()).total_seconds()
             else:
-                a = (1 - ratio / 0.9) * tasks[current_task_index].full_duration.total_seconds()
+                a = (1 - ratio / 0.905) * tasks[current_task_index].full_duration.total_seconds()
             update_full_durations(a)
 
             current_task_index = previous_task_index
         else:
             current_task_index = previous_task_index
 
-            if ratio < 0.9:
-                a = 1 - ratio / 0.9
+            if ratio < 0.905:
+                a = 1 - ratio / 0.905
             else:
                 a = 0
             update_full_durations(- a * tasks[current_task_index].full_duration.total_seconds())

@@ -160,7 +160,7 @@ def basic_attention_test(label_frame, result_list: list, rounds_num = 1, mode = 
                  + ' 错误次数：' + str(count_in_all - correct_count_in_all) + '/' + str(count_in_all)\
                  + ' 错误率：' + '{:.1%}'.format((count_in_all - correct_count_in_all) / count_in_all)\
                  + '\n错误发生频率：'\
-                 + str((count_in_all - correct_count_in_all) / (duration_in_all.total_seconds() / 60)) + '次/min\n'
+                 + '{:.2%}'.format((count_in_all - correct_count_in_all) / (duration_in_all.total_seconds() / 60)) + '次/min\n'
     paint(canvas, rounds_num, rec_in_all, text_size=12)
 
     time.sleep(5)
