@@ -21,6 +21,7 @@ notes_filename = 'notes/notes_multi-subject.txt'
 auto_jump_to_task_0 = True
 auto_jump_to_undone_task = True
 
+
 '''timer_event_type = '课内学习 & 听课'
 task_names_n_full_duration_minutes = [('(自由时间)', '', 30), ('自学', '英语', 45), ('听讲', '英语', 15)]
 task_names_n_full_duration_minutes = [('(自由时间)', '', 30)
