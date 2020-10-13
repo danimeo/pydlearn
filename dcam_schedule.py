@@ -258,7 +258,7 @@ def save():
 
 def add_event():
     global current_event_index
-    e = Event(ent1.get())
+    e = Event(ent1.get(), datetime.timedelta())
     e.start_time = datetime.datetime.strptime(ent2.get(), '%Y-%m-%d %H:%M:%S')
     e.end_time = datetime.datetime.strptime(ent3.get(), '%Y-%m-%d %H:%M:%S')
     e.color = "#%02x%02x%02x" % (random.randint(40, 220), random.randint(40, 220), random.randint(40, 220))
