@@ -30,13 +30,11 @@ task_names_n_full_duration_minutes = [('(自由时间)', '', 30)
     , ('查补：第1章 随机事件及其概率', '概率论与数理统计', 15)
     , ('第2章 轴向拉伸与压缩', '材料力学', 15)]'''
 
-auto_start_time = '2020-10-11 19:40:00'
-timer_event_name, timer_event_type = '再接再厉2小时', '课内学习 & 自学'
+auto_start_time = '2020-10-16 15:30:00'
+timer_event_name, timer_event_type = '一杯C++下午茶', '课内学习 & 自学'
 task_list = [
-    ('(自由时间)', '', 25)
-    , ('自由学习', 'C/C++程序设计', 40)
-    , ('第2章 轴向拉伸与压缩', '材料力学', 25)
-    , ('第3章 扭转', '材料力学', 30)
+    ('(自由时间)', '', 10)
+    , ('自由学习', 'C/C++程序设计', 50)
 ]
 notes_span_seconds = 60
 ds_velocity = 0
@@ -612,7 +610,7 @@ Thread(target=temp1, args=()).start()'''
 def start():
     start_printing()
     record_writing_thread.start()
-    attention_testing_thread.start()
+    # attention_testing_thread.start()
 
     tk.mainloop()
 
