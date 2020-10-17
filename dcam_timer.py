@@ -30,7 +30,7 @@ task_names_n_full_duration_minutes = [('(自由时间)', '', 30)
     , ('查补：第1章 随机事件及其概率', '概率论与数理统计', 15)
     , ('第2章 轴向拉伸与压缩', '材料力学', 15)]'''
 
-auto_start_time = '2020-10-16 15:35:00'
+auto_start_time = '2020-10-16 15:45:00'
 timer_event_name, timer_event_type = '一杯C++下午茶', '课内学习 & 自学'
 task_list = [
     ('(自由时间)', '', 10)
