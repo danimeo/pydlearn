@@ -4,8 +4,8 @@ from tkinter import Tk, StringVar, Label
 
 from dcam_framework import Timestamp, Task, Event, timedelta_to_str
 
-plan_filename = 'dcam_data/plans/plan_202010a.txt'
-records_filename = 'dcam_data/records/dcam_timer_records.txt'
+plan_filename = 'dcam_data/plans/plan_202010b.txt'
+records_filename = 'dcam_data/records/dcam_timer_records_202010b.txt'
 updating_interval = 2
 
 plans = {}
