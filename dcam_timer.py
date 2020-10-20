@@ -30,12 +30,12 @@ task_names_n_full_duration_minutes = [('(自由时间)', '', 30)
     , ('查补：第1章 随机事件及其概率', '概率论与数理统计', 15)
     , ('第2章 轴向拉伸与压缩', '材料力学', 15)]'''
 
-auto_start_time = '2020-10-19 16:50:00'
-timer_event_name, timer_event_type = '课堂学习', '课内学习 & 听课'
+auto_start_time = '2020-10-20 19:50:00'
+timer_event_name, timer_event_type = '英语70分钟', '课内学习 & 自学'
 task_list = [
     ('(自由时间)', '', 20)
-    , ('自学', '材料力学', 30)
-    , ('听讲', '材料力学', 25)
+    , ('口语备考', '英语', 30)
+    , ('词汇量扩充', '英语', 20)
 ]
 notes_span_seconds = 60
 ds_velocity = 0
