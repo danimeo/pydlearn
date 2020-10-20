@@ -232,6 +232,8 @@ def write_to_records_file():
                 file_io.truncate()'''
 
         lines = file_io.readlines()
+        if not lines or not lines[-1]:
+            return
         if datetime.datetime.strptime(lines[-1].split('\t')[0], '%Y-%m-%d %H:%M:%S.%f') == start_time:
             file_io.seek(0)
             file_io.truncate()
