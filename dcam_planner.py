@@ -39,7 +39,7 @@ def get_total_duration_by_subject(subject: str):
     for event in events:
         for task in event.tasks:
             if task.subject == subject:
-                total_duration_by_subject += task.get_duration()
+                total_duration_by_subject += task.get_duration(end=event.end_time)
     return total_duration_by_subject
 
 

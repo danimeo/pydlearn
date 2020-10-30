@@ -37,20 +37,17 @@ class Task:
             self.running = True
             # print(len(self.timestamps), self.running)
 
-    def get_duration(self):
-        now = datetime.datetime.now()
+    def get_duration(self, start=datetime.datetime.now(), end=datetime.datetime.now()):
         d = datetime.timedelta()
-        start = now
         for timestamp in self.timestamps:
             if timestamp.stamp_type == 'start':
                 start = timestamp.stamp
-                continue
-            if timestamp.stamp_type == 'end':
+            elif timestamp.stamp_type == 'end':
                 d += timestamp.stamp - start
-        if len(self.timestamps) > 0:
-            last = self.timestamps[len(self.timestamps) - 1]
+        if self.timestamps:
+            last = self.timestamps[-1]
             if last.stamp_type == 'start':
-                d += datetime.datetime.now() - last.stamp
+                d += end - last.stamp
         return d
 
     def end(self):
@@ -131,7 +128,7 @@ class Event:
     def get_duration(self):
         duration = datetime.timedelta()
         for task in self.tasks:
-            duration += task.get_duration()
+            duration += task.get_duration(end=self.end_time)
         return duration
 
     def get_total_subject_duration(self, plan_filename: str):
@@ -142,7 +139,7 @@ class Event:
         duration = datetime.timedelta()
         for task in self.tasks:
             if task.subject in subject_names:
-                duration += task.get_duration()
+                duration += task.get_duration(end=self.end_time)
 
         return duration
 

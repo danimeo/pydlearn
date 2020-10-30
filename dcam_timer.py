@@ -31,7 +31,7 @@ task_names_n_full_duration_minutes = [('(自由时间)', '', 30)
     , ('第2章 轴向拉伸与压缩', '材料力学', 15)]'''
 
 auto_start_time = '2020-10-26 08:41:00'
-timer_event_name, timer_event_type = '图书馆90分钟', '课内学习 & 自学'
+timer_event_name, timer_event_type = '专注90分钟', '课内学习 & 自学'
 task_list = [
     ('(自由时间)', '', 20)
     , ('自由学习', '概率论与数理统计', 15)
@@ -40,12 +40,12 @@ task_list = [
     , ('第2、3章', '材料力学', 15)
     , ('记单词', '英语', 10)
 ]
-timer_event_name, timer_event_type = '线性代数', '课内学习 & 听课'
+'''timer_event_name, timer_event_type = '线性代数', '课内学习 & 听课'
 task_list = [
     ('(自由时间)', '', 20)
     , ('自学', '线性代数', 35)
     , ('听课', '线性代数', 25)
-]
+]'''
 notes_span_seconds = 60
 ds_velocity = 0
 ds_extra_acceleration = 0
