@@ -84,7 +84,7 @@ def update():
         total_duration = datetime.timedelta()
         # fixed_total_full_duration = datetime.timedelta()
         for event in events:
-            total_duration += event.get_total_subject_duration(plan_filename)
+            total_duration += event.get_total_subject_duration(plan_filename, end_time=None)
             # fixed_total_full_duration += event.fixed_total_full_duration
 
         total_planned_duration = datetime.timedelta(minutes=sum([plans[plan] for plan in plans]))

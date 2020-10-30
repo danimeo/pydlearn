@@ -30,8 +30,8 @@ task_names_n_full_duration_minutes = [('(自由时间)', '', 30)
     , ('查补：第1章 随机事件及其概率', '概率论与数理统计', 15)
     , ('第2章 轴向拉伸与压缩', '材料力学', 15)]'''
 
-auto_start_time = '2020-10-30 17:30:00'
-timer_event_name, timer_event_type = '专注90分钟', '课内学习 & 自学'
+auto_start_time = '2020-10-30 20:45:00'
+timer_event_name, timer_event_type = '图书馆专注90分钟', '课内学习 & 自学'
 task_list = [
     ('(自由时间)', '', 20)
     , ('自由学习', '概率论与数理统计', 15)
@@ -241,10 +241,10 @@ def write_to_records_file():
                 file_io.truncate()'''
 
         lines = file_io.readlines()
-        if not lines or not lines[-1]:
+        '''if not lines or not lines[-1]:
             print('returned.', lines, lines[-1])
-            return
-        if datetime.datetime.strptime(lines[-1].split('\t')[0], '%Y-%m-%d %H:%M:%S.%f') == start_time:
+            return'''
+        if lines and lines[-1] and datetime.datetime.strptime(lines[-1].split('\t')[0], '%Y-%m-%d %H:%M:%S.%f') == start_time:
             file_io.seek(0)
             file_io.truncate()
             file_io.writelines(lines[:-1])
