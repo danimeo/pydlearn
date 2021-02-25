@@ -15,7 +15,7 @@ graph_radius = 150
 graph_ring_width = 20
 refreshing_interval = 0.2
 painting_interval = 60
-schedule_filename = 'dcam_data/schedules/dcam_schedule_20201007.txt'
+schedule_filename = 'dcam_data/schedules/dcam_schedule_20210120.txt'
 timer_records_filename = 'dcam_data/records/dcam_timer_records.txt'
 fore_notifying_minutes = 1
 
@@ -178,7 +178,7 @@ with open(schedule_filename, 'rt', encoding='utf-8') as file_input:
         if not line:
             break
         properties = line[:-1].split(' || ')
-        e = Event(properties[0])
+        e = Event(properties[0], datetime.timedelta())
         e.color = properties[1]
         e.start_time = datetime.datetime.strptime(properties[2], '%Y-%m-%d %H:%M:%S')
         e.end_time = datetime.datetime.strptime(properties[3], '%Y-%m-%d %H:%M:%S')
@@ -295,7 +295,7 @@ def add_event():
 
 
 def edit_event():
-    e_ = Event(ent1.get())
+    e_ = Event(ent1.get(), datetime.timedelta())
     e_.start_time = datetime.datetime.strptime(ent2.get(), '%Y-%m-%d %H:%M:%S')
     e_.end_time = datetime.datetime.strptime(ent3.get(), '%Y-%m-%d %H:%M:%S')
 

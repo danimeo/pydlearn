@@ -30,8 +30,8 @@ task_names_n_full_duration_minutes = [('(自由时间)', '', 30)
     , ('查补：第1章 随机事件及其概率', '概率论与数理统计', 15)
     , ('第2章 轴向拉伸与压缩', '材料力学', 15)]'''
 
-auto_start_time = '2020-10-31 16:30:00'
-timer_event_name, timer_event_type = '图书馆专注90分钟', '课内学习 & 自学'
+auto_start_time = '2021-02-06 09:20:00'
+'''timer_event_name, timer_event_type = '图书馆专注90分钟', '课内学习 & 自学'
 task_list = [
     ('(自由时间)', '', 20)
     , ('自由学习', '概率论与数理统计', 15)
@@ -39,13 +39,20 @@ task_list = [
     , ('自由学习', '线性代数', 15)
     , ('第1、2章', '线性代数', 15)
     , ('记单词', '英语', 10)
-]
+]'''
 '''timer_event_name, timer_event_type = '线性代数', '课内学习 & 听课'
 task_list = [
     ('(自由时间)', '', 20)
     , ('自学', '线性代数', 35)
     , ('听课', '线性代数', 25)
 ]'''
+timer_event_name, timer_event_type = '在家专注1小时', '课内学习 & 自学'
+task_list = [
+    ('(自由时间)', '', 15)
+    , ('自由学习', '概率论与数理统计', 15)
+    , ('自由学习', '机器学习', 15)
+    , ('自由学习', '工程图学', 15)
+]
 notes_span_seconds = 60
 ds_velocity = 0
 ds_extra_acceleration = 0
