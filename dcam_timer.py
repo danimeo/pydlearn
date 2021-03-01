@@ -8,18 +8,21 @@ import pyttsx3
 
 from dcam_framework import Task, Note, timedelta_to_str
 from dcam_tests import basic_attention_test
+from dcam_bci_test import data_loop
 
-version = '2020.10.12'
+
+version = '2021.3.1'
 refreshing_interval = 0.1
 record_writing_interval = 10
 attention_testing_interval = (300, 900)
 attention_probing_interval = (300, 900)
 attention_probing_timeout = 3
 task_log_filename = 'dcam_data/records/dcam_timer_log.txt'
-task_records_filename = 'dcam_data/records/dcam_timer_records_202010b.txt'
+task_records_filename = 'dcam_data/records/dcam_timer_records_202103.txt'
 notes_filename = 'notes/notes_multi-subject.txt'
 auto_jump_to_task_0 = True
 auto_jump_to_undone_task = True
+receiving_bci_data = True
 
 
 '''timer_event_type = '课内学习 & 听课'
@@ -29,8 +32,6 @@ task_names_n_full_duration_minutes = [('(自由时间)', '', 30)
     , ('逆矩阵及其应用', '线性代数', 15)
     , ('查补：第1章 随机事件及其概率', '概率论与数理统计', 15)
     , ('第2章 轴向拉伸与压缩', '材料力学', 15)]'''
-
-auto_start_time = '2021-02-06 09:20:00'
 '''timer_event_name, timer_event_type = '图书馆专注90分钟', '课内学习 & 自学'
 task_list = [
     ('(自由时间)', '', 20)
@@ -46,12 +47,13 @@ task_list = [
     , ('自学', '线性代数', 35)
     , ('听课', '线性代数', 25)
 ]'''
+
+auto_start_time = '2021-03-01 21:05:00'
 timer_event_name, timer_event_type = '在家专注1小时', '课内学习 & 自学'
 task_list = [
     ('(自由时间)', '', 15)
     , ('自由学习', '概率论与数理统计', 15)
     , ('自由学习', '机器学习', 15)
-    , ('自由学习', '工程图学', 15)
 ]
 notes_span_seconds = 60
 ds_velocity = 0
@@ -207,6 +209,16 @@ def count(seconds: float):
     return count_notes(seconds_ago, now) + cap
 
 
+tk = Tk()
+tk.minsize(720, 580)
+tk.title('DCAM-Cephret多任务切换计时器（v' + version + '）')
+label_text = StringVar(tk, '', '')
+lbl1 = Label(tk, textvariable=label_text)
+text1 = Text(tk)
+
+bci_label_text = StringVar(tk, '', '')
+
+
 def calc_ds_velocity():
     global ds_velocity
 
@@ -221,15 +233,10 @@ def calc_ds_velocity():
 
     ds_velocity = (total_qoi + ds_extra_acceleration * refreshing_interval) * ufd_delta_param
 
+    if bci_label_text.get():
+        ds_velocity += (int(bci_label_text.get()) - 50) / 100 * 9
+
     return ds_velocity
-
-
-tk = Tk()
-tk.minsize(720, 580)
-tk.title('DCAM-Cephret多任务切换计时器（v' + version + '）')
-label_text = StringVar(tk, '', '')
-lbl1 = Label(tk, textvariable=label_text)
-text1 = Text(tk)
 
 
 def write_to_records_file():
@@ -275,7 +282,7 @@ def write_to_records_file():
 
 class PrintingThread(Thread):
     def run(self):
-        global printing, label_text, datetime_p, current_task_index, tasks_all_done, start_time, end_time
+        global printing, label_text, datetime_p, current_task_index, tasks_all_done, start_time, end_time, ds_velocity
 
         def refresh_labels():
             if tasks[current_task_index].subject:
@@ -283,7 +290,7 @@ class PrintingThread(Thread):
             else:
                 subj = ''
             label_text.set('总进行时间：[' + str(total_duration()).split('.')[0] + ' / ' + timedelta_to_str(
-                total_full_duration()) + '] | ' + '当前任务：' + subj + tasks[current_task_index].name + ' | 满时变化速度：' + "{:.3f}".format(ds_velocity))
+                total_full_duration()) + '] | ' + '当前任务：' + subj + tasks[current_task_index].name + ' | 满时变化速度：' + "{:.3f}".format(ds_velocity) + ' | 专注度：' + bci_label_text.get())
 
             for i, task in enumerate(tasks):
                 if tasks[i].subject:
@@ -618,20 +625,15 @@ def attention_test():
 attention_testing_thread = Thread(target=attention_test, args=())
 
 
-'''def temp1():
-    while True:
-        print(attention_test_result)
-        time.sleep(1)
-
-
-Thread(target=temp1, args=()).start()'''
-
-
 def start():
     start_printing()
     record_writing_thread.start()
-    # attention_testing_thread.start()
+    if receiving_bci_data:
+        bci_thread = data_loop(bci_label_text, type='attention')
+        bci_thread.start()
 
+
+    # attention_testing_thread.start()
     tk.mainloop()
 
 

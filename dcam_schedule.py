@@ -15,8 +15,8 @@ graph_radius = 150
 graph_ring_width = 20
 refreshing_interval = 0.2
 painting_interval = 60
-schedule_filename = 'dcam_data/schedules/dcam_schedule_20210120.txt'
-timer_records_filename = 'dcam_data/records/dcam_timer_records.txt'
+schedule_filename = 'dcam_data/schedules/dcam_schedule_20210301.txt'
+timer_records_filename = 'dcam_data/records/dcam_timer_records_202103.txt'
 fore_notifying_minutes = 1
 
 refreshing = False
