@@ -8,7 +8,7 @@ import pyttsx3
 
 from dcam_framework import Task, Note, timedelta_to_str
 from dcam_tests import basic_attention_test
-from dcam_bci_test import data_loop
+from dcam_bci_data_processing import data_loop
 
 
 version = '2021.3.1'
